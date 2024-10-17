@@ -57,7 +57,7 @@ data _formats(drop=position start stop length regex);
 run;
 
 /* create formats sas program */
-filename _o "c:\users\pqn7\onedrive - cdc\projects\recipient-experience\formats.sas";
+filename _o "c:\users\pqn7\onedrive - cdc\projects\recipient-experience\recipient_input.sas";
 proc sort data=_formats out=_formats_sorted; by variable; run;
 data formats;
 	file _o;
@@ -87,13 +87,16 @@ data formats;
 		put @40 ';';
 		if not last then put;
 	end;
-	if last then put 'run;';
+	if last then do;
+		put 'run;';
+		put;
+	end;
 run;
 
 
-filename _o "c:\users\pqn7\onedrive - cdc\projects\recipient-experience\test.sas";
+filename _o "c:\users\pqn7\onedrive - cdc\projects\recipient-experience\recipient_input.sas";
 data _null_;
-	file _o;
+	file _o mod;
 	set survey_items end=last;
 	length survey_labl $ 256;
 	if _n_ = 1 then do;
@@ -114,7 +117,8 @@ data _null_;
 	
 	if last then do;
 		put @10 ";";
-		put 'run;';
+		/*put 'run;';*/
+		put;
 	end;
 run;
 
@@ -122,9 +126,9 @@ run;
 
 
 
-filename _o "c:\users\pqn7\onedrive - cdc\projects\recipient-experience\input_statement.sas";
+filename _o "c:\users\pqn7\onedrive - cdc\projects\recipient-experience\recipient_input.sas";
 data _null_;
-	file _o;
+	file _o mod;
 	if _n_ = 0 then set formats(rename=(variable=_variable));
 	set survey_items(keep=variable) end=last;
 	length format_name $ 64;
