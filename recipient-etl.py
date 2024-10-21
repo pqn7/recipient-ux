@@ -2,23 +2,47 @@
 # date: october 2024
 
 #%%
+from recipient import *
 import pandas as pd
 
 survey_csv = 'C:/Users/pqn7/OneDrive - CDC/projects/recipient-experience/from_chad/cdc_cfi_complete_20240827.csv'
 
 
 #%%
-# resources: google search: pandas read_csv not reading "seconds" using AI Overview to parse date with time
-#            chatCDC: add parsing multiple date formats
-def parse_dates(x):
-    """ function to convert datetime into pandas datetime"""
-    for fmt in ("%Y-%m-%d %H:%M:%S", "%A, %B %d, %Y"):
-        try:
-            return pd.to_datetime(x, format=fmt)
-        except ValueError:
-            continue
-    # If no format matched, return NaT (Not a Time) or raise an error
-    return pd.NaT  # Or raise ValueError('no valid date format found')
+# get unique values from CFI survey
+#from recipient import *
+#get_unique_vals(survey) # parameter is a dataframe
+
+
+#%%
+# assign non-categorical dtypes
+NON_CATEGORY_DTYPE = {
+    'WRESPID': int,
+    'DATSTART': str,
+    'DATEND': str,
+    'PROCESS_TEXT_RAW': str,
+    'PROCESS_TEXT_CLEAN': str,
+    'SITEVISIT_TEXT_RAW': str,
+    'SITEVISIT_TEXT_CLEAN': str,
+    'REPORT_TEXT_RAW': str,
+    'REPORT_TEXT_CLEAN': str,
+    'TRAINING_TEXT_RAW': str,
+    'TRAINING_TEXT_CLEAN': str,
+    'COMMNCTN_TEXT_RAW': str,
+    'COMMNCTN_TEXT_CLEAN': str,
+    'PRTNRSHP_TEXT_RAW': str,
+    'PRTNRSHP_TEXT_CLEAN': str,
+    'CDCPO_TEXT_RAW': str,
+    'CDCPO_TEXT_CLEAN': str,
+    'EXPRNC_TEXT_RAW': str,
+    'EXPRNC_TEXT_CLEAN': str,
+    'ADDTN_FDBK_TEXT_RAW': str,
+    'ADDTN_FDBK_TEXT_CLEAN': str,
+    'ISSUED': str,
+    'PP_START': str,
+    'PP_END': str,
+    'NOFO_TITLE': str
+}
 
 
 #%%
@@ -30,14 +54,6 @@ UTILS = [
     'DATSTART',	
     'DATEND'
 ]
-
-# Define the datatype mapping
-UTILS_DTYPE = {
-    'WRESPID': int,
-    'DATSTART': str,
-    'DATEND': str
-}
-
 
 # Application and Award Processes
 AP1 = [
@@ -80,14 +96,6 @@ GA = [
     'PROCESS_CODE2',	# Codified Category for What can CDC do to improve the application and award process? Please be specific.
     'PROCESS_CODE3'	# Codified Category for What can CDC do to improve the application and award process? Please be specific.
 ]
-# Define the datatype mapping
-GA_DTYPE = {
-    'PROCESS_TEXT_RAW': str,
-    'PROCESS_TEXT_CLEAN': str,
-    'PROCESS_CODE1': str,
-    'PROCESS_CODE2': str,
-    'PROCESS_CODE3': str,
-}
 
 # Monitoring and Reporting
 MONITORING_AND_REPORTING = [
@@ -125,19 +133,6 @@ MONITORING_AND_REPORTING = [
     'REPORT_CODE2',	# Codified Category for What can CDC do to improve the monitoring or reporting requirements for this grant or cooperative…
     'REPORT_CODE3'	# Codified Category for What can CDC do to improve the monitoring or reporting requirements for this grant or cooperative…
 ]
-# Define the datatype mapping
-MONITORING_AND_REPORTING_DTYPE = {
-    'SITEVISIT_TEXT_RAW': str,
-    'SITEVISIT_TEXT_CLEAN': str,
-    'SITEVISIT_CODE1': str,
-    'SITEVISIT_CODE2': str,
-    'SITEVISIT_CODE3': str,
-    'REPORT_TEXT_RAW': str,
-    'REPORT_TEXT_CLEAN': str,
-    'REPORT_CODE1': str,
-    'REPORT_CODE2': str,
-    'REPORT_CODE3': str,
-}
 
 # Training and Technical Assistance
 TRAINING_AND_TECHNICAL_ASSISTANCE = [
@@ -163,14 +158,7 @@ TRAINING_AND_TECHNICAL_ASSISTANCE = [
     'TRAINING_TEXT_RAW',	# What can CDC do to improve the training and technical assistance?
     'TRAINING_TEXT_CLEAN',	# Edited for PII What can CDC do to improve the training and technical assistance?
 ]
-TRAINING_AND_TECHNICAL_ASSISTANCE_DTYPE = {
-    'TOPIC_97_Other': str,
-    'TRAINING_TEXT_RAW': str,
-    'TRAINING_TEXT_CLEAN': str,
-    'TRAINING_CODE1': str,
-    'TRAINING_CODE2': str,
-    'TRAINING_CODE3': str
-}
+
 # training and technical assistance not classified
 TTA_NOTCLASSIFIED = [
     'TRAINING_CODE1',	    # Codified Category for What can CDC do to improve the training and technical assistance?
@@ -205,14 +193,6 @@ COMMUNICATION = [
     'COMM_PLAIN',	# Use of plain language in communications
     'COMM_CONSIST'	# Consistency across communication channels
 ]
-# Define the datatype mapping
-COMMUNICATION_DTYPE = {
-    'COMMNCTN_TEXT_RAW': str,
-    'COMMNCTN_TEXT_CLEAN': str,
-    'COMMNCTN_CODE1': str,
-    'COMMNCTN_CODE2': str,
-    'COMMNCTN_CODE3': str
-}
 
 # partnership
 PARTNERSHIP = [
@@ -248,19 +228,6 @@ PARTNERSHIP = [
     'BDG_HIRE', # Hire the types of staff needed
     'BDG_ACTV' # Adapt activities to meet emergent needs
 ]
-# Define the datatype mapping
-PARTNERSHIP_DTYPE = {
-    'PRTNRSHP_TEXT_RAW': str,
-    'PRTNRSHP_TEXT_CLEAN': str,
-    'PRTNRSHP_CODE1': str,
-    'PRTNRSHP_CODE2': str,
-    'PRTNRSHP_CODE3': str,
-    'CDCPO_TEXT_RAW': str,
-    'CDCPO_TEXT_CLEAN': str,
-    'CDCGMS_CODE1': str,
-    'CDCGMS_CODE2': str,
-    'CDCGMS_CODE3': str
-}
 
 # ACSI Benchmarck(CSI)
 ACIS_BENCHMARK = [
@@ -283,14 +250,6 @@ SUGGESTIONS_FOR_IMPROVEMENT = [
     'EXPRNC_CODE2',	# Codified Category for If you could change one aspect of your experience with this grant or cooperative agreement, what...
     'EXPRNC_CODE3'	# Codified Category for If you could change one aspect of your experience with this grant or cooperative agreement, what...
 ]
-# Define the datatype mapping
-SUGGESTIONS_FOR_IMPROVEMENT_DTYPE = {
-    'EXPRNC_TEXT_RAW': str,
-    'EXPRNC_TEXT_CLEAN': str,
-    'EXPRNC_CODE1': str,
-    'EXPRNC_CODE2': str,
-    'EXPRNC_CODE3': str
-}
 
 
 # overal
@@ -303,14 +262,6 @@ OVERALL = [
     'ADDTN_FDBK_CODE2',	# Codified Category for Think about your overall experience with the U.S. Centers for Disease Control and Prevention, acr...
     'ADDTN_FDBK_CODE3'	# Codified Category for Think about your overall experience with the U.S. Centers for Disease Control and Prevention, acr...
 ]
-# Define the datatype mapping
-SUGGESTIONS_FOR_IMPROVEMENT_DTYPE = {
-    'ADDTN_FDBK_TEXT_RAW': str,
-    'ADDTN_FDBK_TEXT_CLEAN': str,
-    'ADDTN_FDBK_CODE1': str,
-    'ADDTN_FDBK_CODE2': str,
-    'ADDTN_FDBK_CODE3': str
-}
 
 # not in survey form
 NOT_IN_SURVEY_FORM = [
@@ -360,23 +311,6 @@ GRANT = [
     'grant9',
     'grant10'
 ]
-# Define the datatype mapping
-GRANT_DTYPE = {
-    'finalgrant': str,
-    'grant1': str,
-    'grant1': str,
-    'grant1': str,
-    'grant1': str,
-    'grant2': str,
-    'grant3': str,
-    'grant4': str,
-    'grant5': str,
-    'grant6': str,
-    'grant7': str,
-    'grant8': str,
-    'grant9': str,
-    'grant10': str
-}
 
 GENERAL_NOT_CLASSIFIED = [
     'CIO',	
@@ -394,49 +328,34 @@ GENERAL_NOT_CLASSIFIED = [
     'HHS_REGION',
     'NOFO_TITLE'
 ]
-# Define the datatype mapping
-GENERAL_NOT_CLASSIFIED_DTYPE = {
-    'CIO': str,
-    'NOFO_NUM': str,
-    'CFDA_NUM': float,
-    'DROPDWN': str,
-    'NOFO_SHORT': str,
-    'FTYPE': str,
-    'RESEARCH': str,
-    'STLT_TYPE': str,
-    'RECIP_TYPE_DETAIL': str,
-    'PP_START': str,
-    'PP_END': str,
-    'NOFO_TITLE': str,
-    'ISSUED': object
-}
-
-USE_COLS = UTILS + AP1 + AP2 + APP_NOTCLASSIFIED + GA 
-USE_COLS = USE_COLS + MONITORING_AND_REPORTING 
-USE_COLS = USE_COLS + TRAINING_AND_TECHNICAL_ASSISTANCE + TTA_NOTCLASSIFIED 
-USE_COLS = USE_COLS + COMMUNICATION + PARTNERSHIP
-USE_COLS = USE_COLS + ACIS_BENCHMARK + FUTURES_AND_BEHAVIORS + SUGGESTIONS_FOR_IMPROVEMENT + OVERALL
-USE_COLS = USE_COLS + GRANT + NOT_IN_SURVEY_FORM + GENERAL_NOT_CLASSIFIED
-
-COL_DTYPE = {**UTILS_DTYPE, **GA_DTYPE, **MONITORING_AND_REPORTING_DTYPE, **MONITORING_AND_REPORTING_DTYPE, \
-             **TRAINING_AND_TECHNICAL_ASSISTANCE_DTYPE, **COMMUNICATION_DTYPE, **PARTNERSHIP_DTYPE, \
-             **SUGGESTIONS_FOR_IMPROVEMENT_DTYPE, **GRANT_DTYPE, **GENERAL_NOT_CLASSIFIED_DTYPE }
-
-
 #%%
 from dateutil import parser
-survey = pd.read_csv(survey_csv, \
-                     usecols=USE_COLS, \
-                     dtype=COL_DTYPE
-                     #,parse_dates=['DATSTART', 'DATEND','ISSUED', 'PP_START','PP_END'] \
-                     #,date_parser=lambda x: pd.to_datetime(x, format="%Y-%m-%d %H:%M:%S")
-                     #,date_parser=lambda x: parse_dates(x)
-                )
+# Get the list of all column names using a small number of rows (for efficiency)
+column_names = pd.read_csv(survey_csv, nrows=0).columns.tolist()
+# Update dtype_dict to set remaining columns to 'category'
+for col in column_names:
+    if col not in NON_CATEGORY_DTYPE:
+        NON_CATEGORY_DTYPE[col] = 'category'
+# Read the CSV file with specified dtypes for each column
+survey = pd.read_csv(survey_csv, dtype=NON_CATEGORY_DTYPE)
+
 # Pandas date_parser parameter is deprecated; must use date_format parameter
 # Parse dates after loading
 # debugged with chatCDC
 for col in ['DATSTART', 'DATEND', 'ISSUED', 'PP_START', 'PP_END']:
     survey[col] = survey[col].apply(lambda x: parser.parse(x) if not pd.isnull(x) else x)
+
+#%%
+# verify datatypes
+# Assuming df is your DataFrame
+column_data_types = survey.dtypes
+
+# Print the data types of all columns
+print(column_data_types)
+
+
+
+#%%
 
 survey.head()
 # %%
