@@ -434,6 +434,7 @@ survey = pd.read_csv(survey_csv, \
                 )
 # Pandas date_parser parameter is deprecated; must use date_format parameter
 # Parse dates after loading
+# debugged with chatCDC
 for col in ['DATSTART', 'DATEND', 'ISSUED', 'PP_START', 'PP_END']:
     survey[col] = survey[col].apply(lambda x: parser.parse(x) if not pd.isnull(x) else x)
 
