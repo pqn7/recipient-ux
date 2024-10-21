@@ -12,14 +12,16 @@ import csv
 import os
 
 def read_bytes(file_name):
-    # get filesize in bytes
+    """ get filesize in bytes """
     #file_name = "C:/Users/pqn7/OneDrive - CDC/projects/recipient-experience/from_chad/cdc_cfi_complete_20240827.csv"
     file_name_size_bytes = os.path.getsize(file_name)
     file_name_size_third = file_name_size_bytes # read a third of file bytes
     return file_name_size_third
 
 def sniff_csv(file_name, file_bytes):
-
+    """ get the dialect object: attributes describing the format of the CSV file
+        get the reader object: process lines from the given csvfile
+    """
     csvfile = open(file_name, "r")
     dialect = csv.Sniffer().sniff(csvfile.read(file_bytes))
     csvfile.seek(0)
@@ -27,6 +29,7 @@ def sniff_csv(file_name, file_bytes):
     return dialect, reader
 
 def recipient_writer(file_name, fileout, file_bytes):
+    """ write the CSV in RFC 4180 """
     with open(fileout, 'w') as csv_out:
         dialect, reader = sniff_csv(file_name, file_bytes)
         reader_in = csv.writer(csv_out, dialect=dialect, delimiter=',', doublequote=True,
