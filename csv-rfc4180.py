@@ -11,7 +11,7 @@
 import csv
 import os
 
-def init_read(file_name):
+def read_bytes(file_name):
     # get filesize in bytes
     #file_name = "C:/Users/pqn7/OneDrive - CDC/projects/recipient-experience/from_chad/cdc_cfi_complete_20240827.csv"
     file_name_size_bytes = os.path.getsize(file_name)
@@ -40,4 +40,4 @@ if __name__ == "__main__":
     file_name = "C:/Users/pqn7/OneDrive - CDC/projects/recipient-experience/from_chad/CDC Raw Data File _Combined_8.27_FINAL-no$-raw-data.csv"
     file_out = "C:/Users/pqn7/OneDrive - CDC/projects/recipient-experience/from_chad/cfi-raw-data.csv"
     #dialect, reader = sniff_csv(file_name, init_read(file_name))
-    recipient_writer(file_name, file_out, init_read(file_name))
+    recipient_writer(file_name, file_out, read_bytes(file_name))
