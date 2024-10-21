@@ -3,10 +3,9 @@
 
 #%%
 import pandas as pd
-from datetime import datetime
-
 
 survey_csv = 'C:/Users/pqn7/OneDrive - CDC/projects/recipient-experience/from_chad/cdc_cfi_complete_20240827.csv'
+
 
 #%%
 # resources: google search: pandas read_csv not reading "seconds" using AI Overview to parse date with time
@@ -18,7 +17,8 @@ def parse_dates(x):
             return pd.to_datetime(x, format=fmt)
         except ValueError:
             continue
-    raise ValueError('no valid date format found')
+    # If no format matched, return NaT (Not a Time) or raise an error
+    return pd.NaT  # Or raise ValueError('no valid date format found')
 
 
 #%%
@@ -408,8 +408,7 @@ GENERAL_NOT_CLASSIFIED_DTYPE = {
     'PP_START': str,
     'PP_END': str,
     'NOFO_TITLE': str,
-    'grant9': str,
-    'grant10': str
+    'ISSUED': object
 }
 
 USE_COLS = UTILS + AP1 + AP2 + APP_NOTCLASSIFIED + GA 
@@ -425,7 +424,7 @@ COL_DTYPE = {**UTILS_DTYPE, **GA_DTYPE, **MONITORING_AND_REPORTING_DTYPE, **MONI
 
 
 #%%
-
+from dateutil import parser
 survey = pd.read_csv(survey_csv, \
                      usecols=USE_COLS, \
                      dtype=COL_DTYPE
@@ -434,11 +433,9 @@ survey = pd.read_csv(survey_csv, \
                      #,date_parser=lambda x: parse_dates(x)
                 )
 # Pandas date_parser parameter is deprecated; must use date_format parameter
-survey['DATSTART'] = parse_dates(survey['DATSTART'])
-survey['DATEND'] = parse_dates(survey['DATEND'])
-survey['ISSUED'] = parse_dates(survey['DATSTART'])
-survey['PP_START'] = parse_dates(survey['DATEND'])
-survey['PP_END'] = parse_dates(survey['DATSTART'])
+# Parse dates after loading
+for col in ['DATSTART', 'DATEND', 'ISSUED', 'PP_START', 'PP_END']:
+    survey[col] = survey[col].apply(lambda x: parser.parse(x) if not pd.isnull(x) else x)
 
 survey.head()
 # %%
