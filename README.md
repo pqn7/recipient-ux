@@ -1,2 +1,2 @@
-# recipient-ux
-Grant Recipient User Experience
+# Recipient Experience Analysis Tool
+This repository contains the code and data processing scripts for analyzing recipient experiences with grants and cooperative agreements from the U.S. Centers for Disease Control and Prevention (CDC). The project aims to understand various aspects of the grant experience, including application processes, monitoring and reporting requirements, training and technical assistance, communication efforts, partnerships, satisfaction benchmarks, future behaviors, suggestions for improvement, and overall experiences.
