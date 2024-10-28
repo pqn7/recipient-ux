@@ -9,4 +9,4 @@ def parse_dates(x):
         except ValueError:
             continue
     # If no format matched, return NaT (Not a Time) or raise an error
-    return pd.NaT  # Or raise ValueError('no valid date format found')
+    return pd.NaT
