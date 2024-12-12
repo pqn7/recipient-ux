@@ -14,9 +14,7 @@ import os
 def read_bytes(file_name):
     """ get filesize in bytes """
     #file_name = "C:/Users/pqn7/OneDrive - CDC/projects/recipient-experience/from_chad/cdc_cfi_complete_20240827.csv"
-    file_name_size_bytes = os.path.getsize(file_name)
-    file_name_size_third = file_name_size_bytes # read a third of file bytes
-    return file_name_size_third
+    return os.path.getsize(file_name)
 
 def sniff_csv(file_name, file_bytes):
     """ get the dialect object: attributes describing the format of the CSV file
@@ -38,9 +36,9 @@ def recipient_writer(file_name, fileout, file_bytes):
 
 
 
-if __name__ == "__main__":
+#if __name__ == "__main__":
 #    
-    file_name = "C:/Users/pqn7/OneDrive - CDC/projects/recipient-experience/from_chad/CDC Raw Data File _Combined_8.27_FINAL-no$-raw-data.csv"
-    file_out = "C:/Users/pqn7/OneDrive - CDC/projects/recipient-experience/alan/cfi-raw-data.csv"
+#    file_name = "C:/Users/pqn7/OneDrive - CDC/projects/recipient-experience/from_chad/CDC Raw Data File _Combined_8.27_FINAL-no$-raw-data.csv"
+#    file_out = "C:/Users/pqn7/OneDrive - CDC/projects/recipient-experience/alan/cfi-raw-data.csv"
     #dialect, reader = sniff_csv(file_name, init_read(file_name))
-    recipient_writer(file_name, file_out, read_bytes(file_name))
+#    recipient_writer(file_name, file_out, read_bytes(file_name))
