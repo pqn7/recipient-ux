@@ -11,6 +11,7 @@
 import csv
 import os
 import json
+from collections import Counter
 
 def read_bytes(file_name):
     """ get filesize in bytes """
@@ -52,7 +53,7 @@ def get_character_details(char):
     """ Get detailed information about the character based on its Unicode code point """
     char_code = ord(char)
     
-    # Mapping of specific non-standard and extended ASCII characters to their detailed descriptions
+    # Complete mapping of specific non-standard and extended ASCII characters to their detailed descriptions
     description_map = {
         # Non-standard ASCII (Control Characters)
         0: ("NULL", "Null character"),
@@ -72,69 +73,70 @@ def get_character_details(char):
         14: ("SO", "Shift out"),
         15: ("SI", "Shift in"),
         16: ("DLE", "Data link escape"),
-        17: ("DC1", "Device control one"), 
-		18: ("DC2","Device control two"), 
-		19: ("DC3","Device control three"), 
-		20: ("DC4","Device control four"), 
-		21 :("NAK","Negative acknowledge"), 
-	    22 :("SYN","Synchronous idle"), 
-	    23 :("ETB","End of trans. Block"), 
-	    24 :("CAN","Cancel"), 
-	    25 :("EM","End of medium"), 
-	    26 :("SUB","Substitute"), 
-	    27 :("ESC","Escape"), 
-	    28 :("FS","File separator"), 
-	    29 :("GS","Group separator"), 
-	    30 :("RS","Record separator"),  
-	    # Extended ASCII Characters
-    	128 : ('€', 'Euro sign'),
-    	129 : ('', 'Unused'),
-        130 : ('‚', 'Single low-9 quotation mark'),
-    	131 : ('ƒ', 'Latin small letter f with hook'),
-    	132 : ('„', 'Double low-9 quotation mark'),
-    	133 : ('…', 'Horizontal ellipsis'),
-    	134 : ('†', 'Dagger'),
-    	135 : ('‡', 'Double dagger'),
-    	136 : ('ˆ', 'Modifier letter circumflex accent'),
-    	137 : ('‰', 'Per mille sign'),
-    	138 : ('Š', 'Latin capital letter S with caron'),
-    	139 : ('‹', 'Single left-pointing angle quotation mark'),
-    	140 : ('Œ', 'Latin capital ligature OE'),
-    	141 : ('', 'Unused'),  
-    	142 : ('Ž', 'Latin capital letter Z with caron'),  
-    	143 : ('', 'Unused'),  
-    	144 : ('', 'Unused'),  
-    	145 : ("‘", "Left single quotation mark"),  
-	    146: ("’", "Right single quotation mark"),  
-	    147: ("“", "Left double quotation mark"),  
-	    148: ("”", "Right double quotation mark"),  
-	    149: ("•", "Bullet"),  
-	    150: ("–", "En dash"),  
-	    151: ("—", "Em dash"),  
-	    152: ("˜", "Small tilde"),  
-	    153: ("™", "Trade mark sign"),  
-	    154: ("š", "Latin small letter S with caron"),  
-	    155: ("›", "Single right-pointing angle quotation mark"),  
-	    156: ("œ", "Latin small ligature oe"),
-	    157: ("", "Unused"),
-	    158: ("ž", "Latin small letter z with caron"),
-	    159: ("Ÿ", "Latin capital letter Y with diaeresis"),
-	    
+        17: ("DC1", "Device control one"),
+        18: ("DC2", "Device control two"),
+        19: ("DC3", "Device control three"),
+        20: ("DC4", "Device control four"),
+        21: ("NAK", "Negative acknowledge"),
+        22: ("SYN", "Synchronous idle"),
+        23: ("ETB", "End of trans. Block"),
+        24: ("CAN", "Cancel"),
+        25: ("EM", "End of medium"),
+        26: ("SUB", "Substitute"),
+        27: ("ESC", "Escape"),
+        28: ("FS", "File separator"),
+        29: ("GS", "Group separator"),
+        30: ("RS", "Record separator"),
+        31: ("US", "Unit separator"),
+        127: ("DEL", "Delete"),
+        # Extended ASCII Characters
+        128: ('€', 'Euro sign'),
+        129: ('', 'Unused'),
+        130: ('‚', 'Single low-9 quotation mark'),
+        131: ('ƒ', 'Latin small letter f with hook'),
+        132: ('„', 'Double low-9 quotation mark'),
+        133: ('…', 'Horizontal ellipsis'),
+        134: ('†', 'Dagger'),
+        135: ('‡', 'Double dagger'),
+        136: ('ˆ', 'Modifier letter circumflex accent'),
+        137: ('‰', 'Per mille sign'),
+        138: ('Š', 'Latin capital letter S with caron'),
+        139: ('‹', 'Single left-pointing angle quotation mark'),
+        140: ('Œ', 'Latin capital ligature OE'),
+        141: ('', 'Unused'),
+        142: ('Ž', 'Latin capital letter Z with caron'),
+        143: ('', 'Unused'),
+        144: ('', 'Unused'),
+        145: ("‘", "Left single quotation mark"),
+        146: ("’", "Right single quotation mark"),
+        147: ("“", "Left double quotation mark"),
+        148: ("”", "Right double quotation mark"),
+        149: ("•", "Bullet"),
+        150: ("–", "En dash"),
+        151: ("—", "Em dash"),
+        152: ("˜", "Small tilde"),
+        153: ("™", "Trade mark sign"),
+        154: ("š", "Latin small letter S with caron"),
+        155: ("›", "Single right-pointing angle quotation mark"),
+        156: ("œ", "Latin small ligature oe"),
+        157: ("", "Unused"),
+        158: ("ž", "Latin small letter z with caron"),
+        159: ("Ÿ", "Latin capital letter Y with diaeresis"),
         # Additional Extended ASCII Characters
-        160: ("\u00A0" , 'Non-breaking space'), 
-        161: ('¡', 'Inverted exclamation mark'), 
-        162: ('¢', 'Cent sign'), 
-        163: ('£', 'Pound sign'), 
-        164: ('¤', 'Currency sign'), 
-        165: ('¥', 'Yen sign'), 
-        166: ('¦', 'Pipe, broken vertical bar'), 
-        167: ('§', 'Section sign'), 
-        168: ('¨', 'Spacing diaeresis – umlaut'), 
-        169: ('©', 'Copyright sign'), 
-        170: ('ª', 'Feminine ordinal indicator'), 
-        171: ('«', 'Left double-angle quotes'), 
+        160: ("\u00A0", 'Non-breaking space'),
+        161: ('¡', 'Inverted exclamation mark'),
+        162: ('¢', 'Cent sign'),
+        163: ('£', 'Pound sign'),
+        164: ('¤', 'Currency sign'),
+        165: ('¥', 'Yen sign'),
+        166: ('¦', 'Pipe, broken vertical bar'),
+        167: ('§', 'Section sign'),
+        168: ('¨', 'Spacing diaeresis – umlaut'),
+        169: ('©', 'Copyright sign'),
+        170: ('ª', 'Feminine ordinal indicator'),
+        171: ('«', 'Left double-angle quotes'),
         172: ('¬', 'Negation'),
-        173: ('­SHY', 'Soft hyphen'),
+        173: ('­', 'Soft hyphen'),
         174: ('®', 'Registered trademark sign'),
         175: ('¯', 'Spacing macron – overline'),
         176: ('°', 'Degree sign'),
@@ -144,15 +146,15 @@ def get_character_details(char):
         180: ('´', 'Acute accent – spacing acute'),
         181: ('µ', 'Micro sign'),
         182: ('¶', 'Pilcrow sign – paragraph sign'),
-        183: ('.','Middle dot – Georgian comma'),
-	    184 :('¸','Spacing cedilla'),  
-	    185 :('¹','Superscript one'),  
-	    186 :('º','Masculine ordinal indicator'),  
-	    187 :('»','Right double-angle quotes'),  
-	    188 :('¼','Fraction one quarter'),  
-	    189 :('½','Fraction one half'),  
-	    190 :('¾','Fraction three quarters'),  
-	    191 :('¿','Inverted question mark'),
+        183: ('.', 'Middle dot – Georgian comma'),
+        184: ('¸', 'Spacing cedilla'),
+        185: ('¹', 'Superscript one'),
+        186: ('º', 'Masculine ordinal indicator'),
+        187: ('»', 'Right double-angle quotes'),
+        188: ('¼', 'Fraction one quarter'),
+        189: ('½', 'Fraction one half'),
+        190: ('¾', 'Fraction three quarters'),
+        191: ('¿', 'Inverted question mark'),
 
     	192 :('À','Latin capital letter A with grave'),
     	193 :('Á','Latin capital letter A with acute'),
@@ -241,10 +243,11 @@ def get_character_details(char):
     }
 
 def count_non_ascii_characters(input_file_name, output_json_file_name):
-    """ Count non-standard and extended ASCII characters and generate hierarchical JSON output """
-    
-    non_standard_ascii_details = []
-    extended_ascii_details = []
+    """ Count non-standard and extended ASCII characters and include counts in JSON output """
+    non_standard_ascii_counts = Counter()
+    extended_ascii_counts = Counter()
+    non_standard_details = {}
+    extended_details = {}
 
     with open(input_file_name, 'r', encoding='utf-8') as csvfile:
         reader = csv.reader(csvfile)
@@ -253,23 +256,35 @@ def count_non_ascii_characters(input_file_name, output_json_file_name):
             for cell in row:
                 for char in cell:
                     details = get_character_details(char)
+                    char_symbol = details["symbol"]
+
                     if details["dec"] < 32 or details["dec"] == 127:  # Non-standard ASCII range
-                        non_standard_ascii_details.append(details)
+                        non_standard_ascii_counts[char_symbol] += 1
+                        non_standard_details[char_symbol] = details
                     elif details["dec"] >= 128:  # Extended ASCII range
-                        extended_ascii_details.append(details)
+                        extended_ascii_counts[char_symbol] += 1
+                        extended_details[char_symbol] = details
+
+    # Combine details with counts
+    non_standard_ascii_with_counts = [
+        {**non_standard_details[char], "count": count} for char, count in non_standard_ascii_counts.items()
+    ]
+    extended_ascii_with_counts = [
+        {**extended_details[char], "count": count} for char, count in extended_ascii_counts.items()
+    ]
 
     # Create a hierarchical structure for JSON output
     json_output = {
         "input_file": input_file_name,
         "output_file": output_json_file_name,
         "non_standard_ascii_characters": {
-            "total_count": len(non_standard_ascii_details),
-            "characters": non_standard_ascii_details
+            "total_count": sum(non_standard_ascii_counts.values()),
+            "characters": non_standard_ascii_with_counts,
         },
         "extended_ascii_characters": {
-            "total_count": len(extended_ascii_details),
-            "characters": extended_ascii_details
-        }
+            "total_count": sum(extended_ascii_counts.values()),
+            "characters": extended_ascii_with_counts,
+        },
     }
 
     # Write to a JSON file
@@ -279,9 +294,9 @@ def count_non_ascii_characters(input_file_name, output_json_file_name):
 
 if __name__ == "__main__":
     
-    file_name = "C:/Users/pqn7/OneDrive - CDC/projects/recipient-experience/data/new-revisions/completers_cdc.csv"
-    file_out = "C:/Users/pqn7/OneDrive - CDC/projects/recipient-experience/data/new-revisions/rfc4180/completers_cdc.csv"
-    json_out = "C:/Users/pqn7/OneDrive - CDC/projects/recipient-experience/data/new-revisions/rfc4180/completers_cdc-non-ascii.json"
+    file_name = "C:/Users/pqn7/OneDrive - CDC/projects/recipient-experience/data/new-revisions/csx_cdc_data.csv"
+    file_out = "C:/Users/pqn7/OneDrive - CDC/projects/recipient-experience/data/new-revisions/rfc4180/csx_cdc_data_rfc4180.csv"
+    json_out = "C:/Users/pqn7/OneDrive - CDC/projects/recipient-experience/data/new-revisions/rfc4180/csx_cdc_data-non-ascii.json"
     recipient_writer(file_name, file_out, read_bytes(file_name))
 
     count_non_ascii_characters(file_name, json_out)
